@@ -2,41 +2,47 @@ import React from 'react';
 import { TestQuestion } from './TestQuestion';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
+import { useAppContext } from '../../state/AppContext';
 
-// Hardcoded data
-const questions = [
-  {
-    id: 'q1',
-    question: 'What is the primary purpose of the "key" prop in a list?',
-    options: ['To style the list item', 'To give React a stable identity for the item', 'To make the item clickable', 'To add a unique ID to the DOM element'],
-  },
-  {
-    id: 'q2',
-    question: 'Which method is commonly used to render a list of elements in React?',
-    options: ['forEach()', 'map()', 'reduce()', 'filter()'],
-  },
-];
+export const TestSection: React.FC = () => {
+  const { state, dispatch } = useAppContext();
+  const { course, currentChapterId, testAnswers } = state;
 
-interface TestSectionProps {}
+  const currentChapter = course.chapters.find(ch => ch.id === currentChapterId);
+  
+  if (!currentChapter) {
+    return <div>Please select a chapter to view the test.</div>;
+  }
 
-export const TestSection: React.FC<TestSectionProps> = () => {
+  const handleAnswerSelect = (questionId: string, answer: string) => {
+    dispatch({ type: 'ANSWER_TEST_QUESTION', payload: { questionId, answer } });
+  };
+
+  const handleSubmitTest = () => {
+    alert(`Test Submitted! Answers: ${JSON.stringify(testAnswers, null, 2)}`);
+    dispatch({ type: 'RESET_TEST_ANSWERS' });
+  };
+
   return (
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>Chapter 6: Assessment</CardTitle>
+          <CardTitle>{currentChapter.title}: Assessment</CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
-          {questions.map((q) => (
+          {currentChapter.test.questions.map((q) => (
             <TestQuestion
               key={q.id}
               id={q.id}
               question={q.question}
               options={q.options}
-              onAnswerSelect={(answer) => console.log(`Question ${q.id} answered: ${answer}`)}
+              onAnswerSelect={(answer) => handleAnswerSelect(q.id, answer)}
+              currentAnswer={testAnswers[q.id]}
             />
           ))}
-          <Button className="w-full">Submit Test</Button>
+          <Button className="w-full" onClick={handleSubmitTest}>
+            Submit Test
+          </Button>
         </CardContent>
       </Card>
     </div>

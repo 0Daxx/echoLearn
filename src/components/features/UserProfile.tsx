@@ -1,16 +1,17 @@
 import React from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
-// import { Button } from '../ui/button';
+import { useAppContext } from '../../state/AppContext';
 
-interface UserProfileProps {}
+export const UserProfile: React.FC = () => {
+  const { state } = useAppContext();
+  const { user } = state;
 
-export const UserProfile: React.FC<UserProfileProps> = () => {
   return (
     <div className="flex items-center gap-3">
-      <span className="text-sm font-medium">John Doe</span>
+      <span className="text-sm font-medium">{user.name}</span>
       <Avatar>
-        <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-        <AvatarFallback>JD</AvatarFallback>
+        <AvatarImage src={user.avatarUrl} alt={user.name} />
+        <AvatarFallback>{user.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
       </Avatar>
     </div>
   );

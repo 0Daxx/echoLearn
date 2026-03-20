@@ -8,16 +8,17 @@ interface TestQuestionProps {
   question: string;
   options: string[];
   onAnswerSelect: (answer: string) => void;
+  currentAnswer?: string; // New prop to control the checked state
 }
 
-export const TestQuestion: React.FC<TestQuestionProps> = ({ question, options, onAnswerSelect }) => {
+export const TestQuestion: React.FC<TestQuestionProps> = ({ question, options, onAnswerSelect, currentAnswer }) => {
   return (
     <Card>
       <CardHeader>
         <CardTitle className="text-base">{question}</CardTitle>
       </CardHeader>
       <CardContent>
-        <RadioGroup onValueChange={onAnswerSelect}>
+        <RadioGroup value={currentAnswer} onValueChange={onAnswerSelect}>
           {options.map((option, index) => (
             <div key={index} className="flex items-center space-x-2">
               <RadioGroupItem value={option} id={`${option}-${index}`} />
