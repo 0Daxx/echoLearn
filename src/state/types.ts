@@ -58,3 +58,28 @@ export type AppAction =
   | { type: 'COMPLETE_TASK'; payload: string } // task id
   | { type: 'ANSWER_TEST_QUESTION'; payload: { questionId: string; answer: string } }
   | { type: 'RESET_TEST_ANSWERS' };
+
+  // --- New Types for AI ---
+export interface ChatMessage {
+  id: string;
+  text: string;
+  isUser: boolean;
+  timestamp: Date;
+}
+
+// --- Updated State Shape ---
+export interface AppState {
+  // ... (keep existing state)
+  ai: {
+    isOpen: boolean;
+    messages: ChatMessage[];
+    isLoading: boolean;
+  };
+}
+
+// --- Updated Actions for useReducer ---
+export type AppAction =
+  // ... (keep existing actions)
+  | { type: 'TOGGLE_AI_ASSISTANT' }
+  | { type: 'ADD_AI_MESSAGE'; payload: { text: string; isUser: boolean } }
+  | { type: 'SET_AI_LOADING'; payload: boolean };

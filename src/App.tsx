@@ -3,7 +3,11 @@ import { Header } from './components/layout/Header';
 import { Sidebar } from './components/layout/Sidebar';
 import { MainContent } from './components/layout/MainContent';
 import { Footer } from './components/layout/Footer';
+import { AIAssistant } from './components/features/AIAssistant'; // Import AIAssistant
+
 import './App.css'; // Make sure this import exists
+
+
 
 function App() {
   return (
@@ -14,6 +18,7 @@ function App() {
         <MainContent />
       </div>
       <Footer />
+      <AIAssistant />
     </div>
   );
 }

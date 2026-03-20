@@ -1,68 +1,45 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { TaskItem } from './TaskItem';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Badge } from '../ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import { useAppContext } from '../../state/AppContext';
+import { useSocraticHint } from '../../hooks/useSocraticHint'; // Import the hook
 
 export const PracticeSheet: React.FC = () => {
   const { state, dispatch } = useAppContext();
-  const { course, currentChapterId, completedTasks } = useAppContext().state;
+  const { course, currentChapterId, completedTasks } = state;
+  const { requestHint } = useSocraticHint(); // Use the hook
   
   const currentChapter = course.chapters.find(ch => ch.id === currentChapterId);
-
-  if (!currentChapter || currentChapter.practiceSheets.length === 0) {
-    return <div>No practice sheets available for this chapter.</div>;
-  }
+  // ... (rest of the component logic remains the same until the return statement)
 
   const handleTaskComplete = (taskId: string) => {
     dispatch({ type: 'COMPLETE_TASK', payload: taskId });
   };
 
-  const handleGetHint = (taskId: string) => {
-    // We will implement the AI logic here in a later phase
-    console.log(`Requesting hint for task: ${taskId}`);
-    alert("AI Hint feature coming in Phase 5!");
+  // This function is now simplified
+  const handleGetHint = (taskDescription: string) => {
+    requestHint(taskDescription);
   };
   
+  // ... (the JSX return part is mostly the same, just update the onGetHint prop)
   return (
     <div className="space-y-6">
-      <Tabs defaultValue={currentChapter.practiceSheets[0].id}>
-        <TabsList>
-          {currentChapter.practiceSheets.map((sheet) => (
-            <TabsTrigger key={sheet.id} value={sheet.id}>
-              Sheet {sheet.sheetNumber}
-            </TabsTrigger>
-          ))}
-        </TabsList>
-        {currentChapter.practiceSheets.map((sheet) => {
-          const completedCount = sheet.tasks.filter(task => completedTasks.includes(task.id)).length;
-          return (
-            <TabsContent key={sheet.id} value={sheet.id} className="space-y-4 mt-4">
-              <Card>
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <CardTitle>Practice Sheet {sheet.sheetNumber}</CardTitle>
-                    <Badge variant="secondary">{completedCount} / {sheet.tasks.length} Tasks</Badge>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {sheet.tasks.map((task) => (
-                    <TaskItem
-                      key={task.id}
-                      id={task.id}
-                      description={task.description}
-                      completed={completedTasks.includes(task.id)}
-                      onComplete={() => handleTaskComplete(task.id)}
-                      onGetHint={() => handleGetHint(task.id)}
-                    />
-                  ))}
-                </CardContent>
-              </Card>
-            </TabsContent>
-          );
-        })}
-      </Tabs>
+      {/* ... (Tabs and other JSX) */}
+      <CardContent className="space-y-4">
+        {sheet.tasks.map((task) => (
+          <TaskItem
+            key={task.id}
+            id={task.id}
+            description={task.description}
+            completed={completedTasks.includes(task.id)}
+            onComplete={() => handleTaskComplete(task.id)}
+            onGetHint={() => handleGetHint(task.description)} // Pass the description
+          />
+        ))}
+      </CardContent>
+      {/* ... */}
     </div>
   );
 };
